@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/SteamClientHomebrew/Millennium/main/src/sys/plugin-schema.json",
   "name": "adamraichu.custom-artwork-editor",
   "common_name": "Custom Artwork Editor (alpha dev build)",
-  "description": "",
-  "useBackend": true
+  "description": "TODO: Actually use the backend.",
+  "useBackend": false
 }
