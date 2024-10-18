@@ -728,16 +728,12 @@ var millennium_main = (function (exports) {
             svgContainer.appendChild(clone);
             clone.addEventListener("click", async () => {
                 const response = await wrappedCallServerMethod("getGridInfo");
-                const friendCodesList = JSON.parse(response);
-                console.log({ friendCodesList });
+                const gridInfo = JSON.parse(response);
+                console.log({ gridInfo });
             });
             // svgContainer.appendChild(parser.parseFromString(paintIcon, "text/xml").children[0]);
         }
     }
-    class MessageHandler {
-        static test() { }
-    }
-    Millennium.exposeObj({ handler: MessageHandler });
 
     exports.default = CustomArtworkEditorFrontend;
 
