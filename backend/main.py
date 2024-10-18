@@ -29,7 +29,7 @@ class CustomArtworkEditorBackend:
 encoder = json.JSONEncoder()
 
 
-def getGridInfo():
+def getGridInfo(id: str):
     dirNames = os.listdir(os.path.join(Millennium.steam_path(), "userdata"))
     obj = {"dirs": dirNames}
     return encoder.encode(obj)

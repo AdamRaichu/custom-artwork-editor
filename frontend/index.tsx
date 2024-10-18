@@ -3,6 +3,7 @@ import { painIconID, paintSvgPath } from "./elements/paint_icon";
 
 // TODO: Remove when official typings come out.
 declare const LocalizationManager: any;
+declare const g_PopupManager: any;
 
 export default async function CustomArtworkEditorFrontend() {
   console.log("Custom Artwork Editor Frontend loaded.");
@@ -28,7 +29,7 @@ async function addButtonToLibrary(context: any) {
     svg.innerHTML = paintSvgPath;
     svgContainer.appendChild(clone);
     clone.addEventListener("click", async () => {
-      const response = await Millennium.callServerMethod("getGridInfo");
+      const response = await Millennium.callServerMethod("getGridInfo", { id: g_PopupManager.m_unCurrentAccountID });
       const gridInfo: { dirs: string[] } = JSON.parse(response);
       console.log({ gridInfo });
     });
