@@ -726,9 +726,18 @@ var millennium_main = (function (exports) {
             svg.setAttribute("viewBox", "0 0 32 32");
             svg.innerHTML = paintSvgPath;
             svgContainer.appendChild(clone);
+            clone.addEventListener("click", async () => {
+                const response = await wrappedCallServerMethod("getGridInfo");
+                const friendCodesList = JSON.parse(response);
+                console.log({ friendCodesList });
+            });
             // svgContainer.appendChild(parser.parseFromString(paintIcon, "text/xml").children[0]);
         }
     }
+    class MessageHandler {
+        static test() { }
+    }
+    Millennium.exposeObj({ handler: MessageHandler });
 
     exports.default = CustomArtworkEditorFrontend;
 

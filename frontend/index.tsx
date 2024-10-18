@@ -27,6 +27,11 @@ async function addButtonToLibrary(context: any) {
     svg.setAttribute("viewBox", "0 0 32 32");
     svg.innerHTML = paintSvgPath;
     svgContainer.appendChild(clone);
+    clone.addEventListener("click", async () => {
+      const response = await Millennium.callServerMethod("getGridInfo");
+      const gridInfo: { dirs: string[] } = JSON.parse(response);
+      console.log({ gridInfo });
+    });
     // svgContainer.appendChild(parser.parseFromString(paintIcon, "text/xml").children[0]);
   }
 }

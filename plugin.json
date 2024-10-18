@@ -3,5 +3,5 @@
   "name": "adamraichu.custom-artwork-editor",
   "common_name": "Custom Artwork Editor (alpha dev build)",
   "description": "TODO: Actually use the backend.",
-  "useBackend": false
+  "useBackend": true
 }
