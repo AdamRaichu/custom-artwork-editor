@@ -717,6 +717,19 @@ body {
   flex-direction: row;
   justify-content: space-between;
 }
+
+#game-list {
+  width: 20%;
+  border-right: 2px solid #30353d;
+}
+
+#image-container {
+  width: 80%
+}
+
+#image-container h2 {
+  text-align: center;
+}
 `;
 
     async function CustomArtworkEditorFrontend() {
@@ -753,13 +766,24 @@ body {
         const doc = win.document;
         doc.documentElement.id = "adamraichu_custom-artwork-editor_popup";
         const styles = doc.createElement("style");
-        styles.innerText = popupCSS;
+        styles.innerHTML = popupCSS;
         doc.head.appendChild(styles);
         const body = doc.body;
         const layoutContainer = doc.createElement("div");
         layoutContainer.id = "layout-container";
         body.appendChild(layoutContainer);
-        // const gameList = doc.createElement("div");
+        const gameList = doc.createElement("div");
+        gameList.id = "game-list";
+        layoutContainer.appendChild(gameList);
+        const imageContainer = doc.createElement("div");
+        imageContainer.id = "image-container";
+        layoutContainer.appendChild(imageContainer);
+        // Get the games from the library.
+        const ids = appInfoStore.m_mapAppInfo.keys();
+        for (const id of ids) {
+            const appInfo = appInfoStore.m_mapAppInfo.get(id);
+            console.log(`${appInfo.m_strName} (${id}) is type ${appInfo.m_eAppType}`);
+        }
     }
 
     exports.default = CustomArtworkEditorFrontend;
