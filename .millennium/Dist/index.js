@@ -737,6 +737,7 @@ body {
             clone.id = painIconID;
             const svg = clone.children[0];
             svg.setAttribute("viewBox", "0 0 32 32");
+            svg.style.transform = "scale(1)";
             svg.innerHTML = paintSvgPath;
             svgContainer.appendChild(clone);
             clone.addEventListener("click", () => openGridMenu());
