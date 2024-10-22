@@ -30,8 +30,25 @@ encoder = json.JSONEncoder()
 
 
 def getGridInfo(id: str):
-    dirNames = os.listdir(os.path.join(Millennium.steam_path(), "userdata"))
-    obj = {"dirs": dirNames}
+    userConfigPath = os.path.join(Millennium.steam_path(), "userdata", id, "config")
+    configFolderFiles = os.listdir(userConfigPath)
+
+    if not ("grid" in configFolderFiles):
+        # User does not yet have any custom artwork.
+        return []
+
+    # @see frontend/project.d.ts@GridInfoResponse
+    obj = {"jsonFiles": [], "imageFiles": []}
+
+    gridPath = os.path.join(userConfigPath, "grid")
+    gridItems = os.listdir(gridPath)
+    for item in gridItems:
+        if item.endswith(".json"):
+            with open(os.path.join(gridPath, item), "r") as f:
+                obj["jsonFiles"].append(json.load(f))
+        else:
+            obj["imageFiles"].append(item)
+
     return encoder.encode(obj)
 
 

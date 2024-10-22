@@ -706,6 +706,19 @@ var millennium_main = (function (exports) {
 	s3.563,1.746,3.03,3.881l-1.06,4.239C17.437,11.254,18.8,13,21,13h1C24.2,13,26,14.8,26,17z M18,4c0-1.105-0.895-2-2-2s-2,0.895-2,2
 	c0,1.105,0.895,2,2,2S18,5.105,18,4z"></path>`;
 
+    const popupCSS = `
+body {
+  background-color: #1f2227;
+  color: white;
+}
+
+#layout-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+`;
+
     async function CustomArtworkEditorFrontend() {
         console.log("Custom Artwork Editor Frontend loaded.");
         Millennium.AddWindowCreateHook((context) => {
@@ -726,13 +739,26 @@ var millennium_main = (function (exports) {
             svg.setAttribute("viewBox", "0 0 32 32");
             svg.innerHTML = paintSvgPath;
             svgContainer.appendChild(clone);
-            clone.addEventListener("click", async () => {
-                const response = await wrappedCallServerMethod("getGridInfo");
-                const gridInfo = JSON.parse(response);
-                console.log({ gridInfo });
-            });
-            // svgContainer.appendChild(parser.parseFromString(paintIcon, "text/xml").children[0]);
+            clone.addEventListener("click", () => openGridMenu());
         }
+    }
+    async function openGridMenu() {
+        const response = await wrappedCallServerMethod("getGridInfo", { id: g_PopupManager.m_unCurrentAccountID.toString() });
+        const gridInfo = JSON.parse(response);
+        console.log({ gridInfo });
+        // Create popup
+        const win = window.open("about:blank");
+        // ReactDOM.render(<CustomArtworkEditor gameIds={["12345"]} />, win.document.body);
+        const doc = win.document;
+        doc.documentElement.id = "adamraichu_custom-artwork-editor_popup";
+        const styles = doc.createElement("style");
+        styles.innerText = popupCSS;
+        doc.head.appendChild(styles);
+        const body = doc.body;
+        const layoutContainer = doc.createElement("div");
+        layoutContainer.id = "layout-container";
+        body.appendChild(layoutContainer);
+        // const gameList = doc.createElement("div");
     }
 
     exports.default = CustomArtworkEditorFrontend;

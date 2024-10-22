@@ -1,9 +1,6 @@
 import { Millennium } from "millennium-lib";
 import { painIconID, paintSvgPath } from "./elements/paint_icon";
-
-// TODO: Remove when official typings come out.
-declare const LocalizationManager: any;
-declare const g_PopupManager: any;
+import { popupCSS } from "./popup/style";
 
 export default async function CustomArtworkEditorFrontend() {
   console.log("Custom Artwork Editor Frontend loaded.");
@@ -28,11 +25,29 @@ async function addButtonToLibrary(context: any) {
     svg.setAttribute("viewBox", "0 0 32 32");
     svg.innerHTML = paintSvgPath;
     svgContainer.appendChild(clone);
-    clone.addEventListener("click", async () => {
-      const response = await Millennium.callServerMethod("getGridInfo", { id: g_PopupManager.m_unCurrentAccountID });
-      const gridInfo: { dirs: string[] } = JSON.parse(response);
-      console.log({ gridInfo });
-    });
-    // svgContainer.appendChild(parser.parseFromString(paintIcon, "text/xml").children[0]);
+    clone.addEventListener("click", () => openGridMenu());
   }
+}
+
+async function openGridMenu() {
+  const response = await Millennium.callServerMethod("getGridInfo", { id: g_PopupManager.m_unCurrentAccountID.toString() });
+  const gridInfo: GridInfoResponse = JSON.parse(response);
+  console.log({ gridInfo });
+
+  // Create popup
+  const win = window.open("about:blank");
+  // ReactDOM.render(<CustomArtworkEditor gameIds={["12345"]} />, win.document.body);
+  const doc = win.document;
+  doc.documentElement.id = "adamraichu_custom-artwork-editor_popup";
+
+  const styles = doc.createElement("style");
+  styles.innerText = popupCSS;
+  doc.head.appendChild(styles);
+
+  const body = doc.body;
+  const layoutContainer = doc.createElement("div");
+  layoutContainer.id = "layout-container";
+  body.appendChild(layoutContainer);
+
+  // const gameList = doc.createElement("div");
 }

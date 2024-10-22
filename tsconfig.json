@@ -18,6 +18,8 @@
     "resolveJsonModule": true
   },
   "include": [
-    "frontend"
+    "frontend",
+    "maybe-later/from-millennium",
+    "maybe-later/CustomArtworkEditor.tsx"
   ]
 }
