@@ -732,6 +732,10 @@ body {
 }
 `;
 
+    /** document.querySelectorAll("._1ijTaXJJA5YWl_fW2IxcaT .Panel") ->
+     * list of items in the library sidebar; includes category nodes (like favorites) as well */
+    const libraryListSelector = "._1ijTaXJJA5YWl_fW2IxcaT .Panel ._1vO6BoiVslZgs1kqDGdUs8";
+
     async function CustomArtworkEditorFrontend() {
         console.log("Custom Artwork Editor Frontend loaded.");
         Millennium.AddWindowCreateHook((context) => {
@@ -753,37 +757,61 @@ body {
             svg.style.transform = "scale(1)";
             svg.innerHTML = paintSvgPath;
             svgContainer.appendChild(clone);
-            clone.addEventListener("click", () => openGridMenu());
+            clone.addEventListener("click", () => openGridMenu(context.m_popup.document));
         }
     }
-    async function openGridMenu() {
+    async function openGridMenu(steamDocument) {
         const response = await wrappedCallServerMethod("getGridInfo", { id: g_PopupManager.m_unCurrentAccountID.toString() });
         const gridInfo = JSON.parse(response);
         console.log({ gridInfo });
         // Create popup
         const win = window.open("about:blank");
         // ReactDOM.render(<CustomArtworkEditor gameIds={["12345"]} />, win.document.body);
-        const doc = win.document;
-        doc.documentElement.id = "adamraichu_custom-artwork-editor_popup";
-        const styles = doc.createElement("style");
+        const popupDoc = win.document;
+        popupDoc.documentElement.id = "adamraichu_custom-artwork-editor_popup";
+        const styles = popupDoc.createElement("style");
         styles.innerHTML = popupCSS;
-        doc.head.appendChild(styles);
-        const body = doc.body;
-        const layoutContainer = doc.createElement("div");
+        popupDoc.head.appendChild(styles);
+        const body = popupDoc.body;
+        const layoutContainer = popupDoc.createElement("div");
         layoutContainer.id = "layout-container";
         body.appendChild(layoutContainer);
-        const gameList = doc.createElement("div");
+        const gameList = popupDoc.createElement("div");
         gameList.id = "game-list";
         layoutContainer.appendChild(gameList);
-        const imageContainer = doc.createElement("div");
+        const imageContainer = popupDoc.createElement("div");
         imageContainer.id = "image-container";
         layoutContainer.appendChild(imageContainer);
         // Get the games from the library.
         const ids = appInfoStore.m_mapAppInfo.keys();
+        const libraryItems = {};
         for (const id of ids) {
             const appInfo = appInfoStore.m_mapAppInfo.get(id);
-            console.log(`${appInfo.m_strName} (${id}) is type ${appInfo.m_eAppType}`);
+            console.debug(`${appInfo.m_strName} (${id}) is type ${appInfo.m_eAppType}`);
+            libraryItems[appInfo.m_strName] = appInfo;
         }
+        const _games = steamDocument.querySelectorAll(libraryListSelector + ":not(:has(span)), " + libraryListSelector + " span:has(span)");
+        console.debug({ _games });
+        const games = [];
+        for (const game of _games) {
+            let name;
+            if (game.tagName === "SPAN") {
+                // For "update queued" games.
+                const child = game.children[0];
+                console.debug({ child });
+                steamDocument.body.appendChild(child);
+                name = game.innerText;
+                console.debug({ child });
+                game.appendChild(child);
+                console.debug({ child });
+            }
+            else {
+                name = game.innerText;
+            }
+            console.debug({ name });
+            games.push(libraryItems[name]);
+        }
+        console.debug({ games });
     }
 
     exports.default = CustomArtworkEditorFrontend;
